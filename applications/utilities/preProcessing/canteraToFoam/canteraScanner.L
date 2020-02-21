@@ -40,7 +40,7 @@ int Foam::canteraReader::yyBufSize = YY_BUF_SIZE;
 // It is called by yylex but is not used as the mechanism to change file.
 // See <<EOF>>
 //! @cond dummy
-#if YY_FLEX_SUBMINOR_VERSION < 34
+#if YY_FLEX_SUBMINOR_VERSION < 34 &&  YY_FLEX_MINOR_VERSION < 6
 extern "C" int yywrap()
 #else
 int yyFlexLexer::yywrap()

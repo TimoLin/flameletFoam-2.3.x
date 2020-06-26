@@ -468,6 +468,12 @@ for (int i=0;i<singleData_[labelT].size();i++)
    }
 }
 singleData_.append(he);
+Info << "This is hs: "<<endl;
+for (int i=0;i<singleData_[labelT].size();i++)
+{
+    Info << he[i] << ",";
+}
+Info << endl;
 }
 
 void Foam::canteraReader::calculateZ()
@@ -562,13 +568,15 @@ Foam::canteraReader::canteraReader(const IOdictionary& canteraDict, rhoReactionT
       // Special treatment for boundaries
       singleData_[tableNames_["Z"]][0] = 0;
       singleData_[tableNames_["Z"]][singleData_[tableNames_["Z"]].size()-1] = 1;
-
+       
+      Info << "This is chi:\n"<< chi_param_[numChi]<<endl;
       // Calculate hs
       calculateEnthalpy();
 
+      ///*
       // Calculate Z
       calculateZ();
-
+      
       for (int numZeta=0; numZeta<Zeta_param_.size();numZeta++)
       {
          // Write Integrated Data in sampledData
@@ -580,6 +588,7 @@ Foam::canteraReader::canteraReader(const IOdictionary& canteraDict, rhoReactionT
             sampledData_[k][numChi][numZeta] = integratedData_[k];
          }
       }
+      //*/
    }
 }
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //

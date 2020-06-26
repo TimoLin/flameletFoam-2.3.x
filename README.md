@@ -56,3 +56,8 @@ the framework of the Sonderforschungsbereich/Transregio 40.
 
 Should you find bugs or have suggestions how to make the code better, please post on cfd-online using the following thread:
 http://www.cfd-online.com/Forums/openfoam-programming-development/145761-flameletfoam.html
+
+
+## Bug fixes
+
+If compile canterToFoam failed, check [this thread](https://medium.com/@syoukera/flameletfoam-%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB-899b74ba6c8b)

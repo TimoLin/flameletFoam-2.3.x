@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     (
         "fields",
         "list",
-        "specify a list of fields to be reconstructed. Eg, '(U T p)' - "
+        "specify a list of fields to be reconstructed. Eg, '(U T p)' or (CH4 O2 CO2) or (Yc) - "
         "regular expressions not currently supported"
     );
 
@@ -180,6 +180,22 @@ int main(int argc, char *argv[])
             sqrt(varZ/max(Z*(1-Z), SMALL))
         );
 
+        volScalarField Yc
+        (
+            IOobject
+            (
+                "C",
+                runTime.timeName(),
+                mesh,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh,
+            dimensionSet(0, 0, 0, 0, 0, 0, 0)
+        );
+        
+        Yc = 0.0;
+
         // Interpolate for internal Field
         forAll(Y, i)
         {
@@ -200,6 +216,13 @@ int main(int argc, char *argv[])
          	 }
 
          	 YCells[cellI] = solver.interpolate(ubIF[cellI], posIF[cellI], i);
+
+             word specieName = thermo.composition().Y()[i].name();
+             if ( specieName == "CO2" || specieName == "H2O" || specieName == "CO"||specieName == "H2" )
+             {
+                Yc[cellI] += YCells[cellI];
+             }
+
            }
         }
 
@@ -211,6 +234,8 @@ int main(int argc, char *argv[])
            const fvPatchScalarField& pZ = Z.boundaryField()[patchi];
 
            fvPatchScalarField& pHe = he.boundaryField()[patchi];
+
+           fvPatchScalarField& pYc = Yc.boundaryField()[patchi];
 
            forAll(Y, i)
            {
@@ -231,6 +256,13 @@ int main(int argc, char *argv[])
               	 }
 
              	 pY[facei] = solver.interpolate(ubP[facei], posP[facei], i);
+
+                 word specieName = thermo.composition().Y()[i].name();
+                 if ( specieName == "CO2" || specieName == "H2O" || specieName == "CO"||specieName == "H2" )
+                 {
+                     pYc[facei] += pY[facei];
+                 }
+
               }
            }
         }
@@ -245,8 +277,12 @@ int main(int argc, char *argv[])
                Info << "Writing field " << thermo.composition().Y()[i].name() << endl;
         	   thermo.composition().Y()[i].write();
             }
+
             Info << "Writing field Zeta" << endl;
         	Zeta.write();
+
+            Info << "Writing field Progress variable" << endl;
+        	Yc.write();
         }
         else
         {
@@ -258,8 +294,13 @@ int main(int argc, char *argv[])
         		   thermo.composition().Y()[i].write();
         	   }
             }
+
             Info << "Writing field Zeta" << endl;
         	Zeta.write();
+
+            Info << "Writing field Progress variable" << endl;
+        	Yc.write();
+
         }
 
     }
